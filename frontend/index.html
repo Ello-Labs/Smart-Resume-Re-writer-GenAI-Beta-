@@ -3,18 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Open-Source Resume Rewriter</title>
+<title>Kimmiii Resume Rewriter</title>
 <style>
   :root {
-    --bg: #f7f7f5;
-    --card: #ffffff;
-    --border: #e3e2dd;
-    --text: #1a1a18;
-    --text-secondary: #6b6a64;
-    --accent: #185fa5;
-    --success: #3b6d11;
-    --warn: #854f0b;
-    --danger: #a32d2d;
+    /* Eye comfortable, warm sage / cream palette */
+    --bg: #f4f1ea;
+    --card: #fdfcf8;
+    --border: #e2ddd0;
+    --text: #34372f;
+    --text-secondary: #7a7e70;
+    --accent: #5d7a63;
+    --accent-soft: #e7efe6;
+    --success: #5d7a63;
+    --warn: #b08543;
+    --danger: #b15c4a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -25,14 +27,16 @@
     line-height: 1.6;
   }
   .container { max-width: 1100px; margin: 0 auto; }
-  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
-  .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 1.5rem; }
+  header { margin-bottom: 1.5rem; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+  h1 .brand { color: var(--accent); }
+  .subtitle { color: var(--text-secondary); font-size: 14px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 1.25rem;
   }
   label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
@@ -45,6 +49,7 @@
     font-size: 13px;
     resize: vertical;
     background: #fff;
+    color: var(--text);
   }
   textarea:focus { outline: none; border-color: var(--accent); }
   .col { display: flex; flex-direction: column; gap: 1rem; }
@@ -54,14 +59,16 @@
     padding: 10px 18px;
     font-size: 14px;
     cursor: pointer;
-    background: var(--text);
+    background: var(--accent);
     color: #fff;
     font-weight: 500;
-    transition: opacity .15s;
+    transition: opacity .15s, transform .05s;
   }
-  button:hover { opacity: 0.85; }
+  button:hover { opacity: 0.88; }
+  button:active { transform: scale(0.99); }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
   button.secondary { background: transparent; color: var(--text); }
+  button.ghost { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
   .btn-row { display: flex; gap: 10px; }
   .output {
     white-space: pre-wrap;
@@ -72,26 +79,19 @@
   }
   .placeholder { color: var(--text-secondary); font-size: 13px; }
   .metrics { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
-  .metric {
-    background: #f1f0eb;
-    border-radius: 8px;
-    padding: 8px 14px;
-    min-width: 100px;
-  }
+  .metric { background: var(--accent-soft); border-radius: 8px; padding: 8px 14px; min-width: 100px; }
   .metric-label { font-size: 11px; color: var(--text-secondary); }
-  .metric-val { font-size: 18px; font-weight: 600; }
+  .metric-val { font-size: 18px; font-weight: 600; color: var(--text); }
   .badge {
     display: inline-flex; align-items: center; gap: 5px;
     font-size: 12px; padding: 3px 10px; border-radius: 6px; font-weight: 500;
   }
-  .badge-info { background: #e6f1fb; color: var(--accent); }
-  .badge-success { background: #eaf3de; color: var(--success); }
-  .badge-warn { background: #faeeda; color: var(--warn); }
-  .badge-danger { background: #fcebeb; color: var(--danger); }
-  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .progress {
-    height: 3px; background: #e6f1fb; border-radius: 2px; overflow: hidden; margin-top: 8px;
-  }
+  .badge-info { background: #e7efe6; color: var(--accent); }
+  .badge-success { background: #e7efe6; color: var(--success); }
+  .badge-warn { background: #f6ead7; color: var(--warn); }
+  .badge-danger { background: #f8e6e1; color: var(--danger); }
+  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px; }
+  .progress { height: 3px; background: var(--accent-soft); border-radius: 2px; overflow: hidden; margin-top: 8px; }
   .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width .2s; }
   .cursor {
     display: inline-block; width: 2px; height: 13px; background: var(--text-secondary);
@@ -101,7 +101,7 @@
   .sample-link { font-size: 12px; color: var(--accent); cursor: pointer; text-decoration: underline; }
   select {
     border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
-    font-size: 13px; background: #fff; font-family: inherit;
+    font-size: 13px; background: #fff; font-family: inherit; color: var(--text);
   }
   .status-bar {
     font-size: 12px; color: var(--text-secondary); margin-top: 10px;
@@ -111,18 +111,32 @@
   .dot-ok { background: var(--success); }
   .dot-bad { background: var(--danger); }
   .dot-checking { background: var(--warn); }
-  .upload-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  input[type="file"] { font-size: 12px; max-width: 100%; }
+  .upload-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  input[type="file"] {
+    font-size: 12px; max-width: 100%; color: var(--text-secondary);
+  }
+  .ats-checks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .ats-check {
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; display: inline-flex;
+    align-items: center; gap: 4px;
+  }
+  .ats-pass { background: #e7efe6; color: var(--success); }
+  .ats-fail { background: #f8e6e1; color: var(--danger); }
+  .download-row { display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap; }
+  .download-row button { flex: 1; min-width: 140px; }
+  .hint { font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 <div class="container">
-  <h1>Open-source resume rewriter</h1>
-  <p class="subtitle">
-    Runs entirely on local, free open-source models via Ollama. No API keys, no cloud costs.
-  </p>
+  <header>
+    <h1><span class="brand">Kimmiii</span> Resume Rewriter</h1>
+    <p class="subtitle">
+      Tailors your resume to a job description in real time, formatted for
+      Applicant Tracking Systems and written in a natural, human voice.
+      Download a ready to edit Word document when you're done.
+    </p>
+  </header>
 
   <div class="grid">
     <div class="col">
@@ -144,9 +158,15 @@
       </div>
 
       <div class="card">
-        <label>Model (must be pulled in Ollama)</label>
+        <label>Profile photo (optional, for the downloaded Word document)</label>
+        <input type="file" id="photoFile" accept="image/*" onchange="handlePhotoUpload(event)" />
+        <div id="photoStatus" class="hint"></div>
+      </div>
+
+      <div class="card" id="modelRow">
+        <label>Model</label>
         <select id="model">
-          <option value="llama3.2:latest">llama3.2:latest (recommended - fastest you have)</option>
+          <option value="llama3.2:latest">llama3.2:latest (recommended)</option>
           <option value="qwen3:4b">qwen3:4b</option>
           <option value="llama3.1:latest">llama3.1:latest</option>
           <option value="qwen2.5:7b">qwen2.5:7b</option>
@@ -175,9 +195,6 @@
             Tailored output
             <span class="badge badge-info" id="statusBadge" style="display:none"></span>
           </span>
-          <button class="secondary" id="copyBtn" onclick="copyOutput()" style="display:none;padding:6px 12px;font-size:12px">
-            Copy
-          </button>
         </div>
 
         <div class="metrics" id="metrics" style="display:none">
@@ -189,46 +206,73 @@
             <div class="metric-label">Total time</div>
             <div class="metric-val" id="mTotal">—</div>
           </div>
-          <div class="metric">
-            <div class="metric-label">Model</div>
-            <div class="metric-val" id="mModel" style="font-size:13px">—</div>
-          </div>
         </div>
 
         <div id="output" class="output">
           <span class="placeholder">Your tailored resume will stream here...</span>
+        </div>
+
+        <div class="ats-checks" id="atsChecks"></div>
+
+        <div class="download-row" id="downloadRow" style="display:none">
+          <button onclick="downloadDocx()" id="downloadBtn">Download as Word (.docx)</button>
+          <button class="ghost" onclick="copyOutput()" id="copyBtn">Copy text</button>
+        </div>
+        <div class="hint" id="downloadHint" style="display:none">
+          The downloaded file follows a JobStreet style two column resume
+          layout. Open it in Word, add your photo if you did not upload one
+          above, and adjust a few words as needed.
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script>
 const API_BASE = "http://localhost:8000";
 
-const SAMPLE_RESUME = `Jerah Santos | AI Engineer | jerah@email.com | Manila, PH
+const SAMPLE_RESUME = `Jerah Santos | AI Engineer | jerah@email.com | 0917 000 0000 | Manila, PH
 
 SUMMARY
 AI Engineer with 3 years of experience building NLP pipelines, RAG systems, and agentic AI solutions. Previously 8 years as a Senior 3D Animation Artist in the AEC industry.
 
 EXPERIENCE
-AI Engineer - Genpact Philippines (2022-2025)
+AI Engineer
+Genpact Philippines
+January 2022 to Present
 - Built RAG chatbot for insurance PDF corpus using FastAPI, LangChain, and OpenAI
-- Designed multi-agent orchestration pipeline with LangGraph
+- Designed multi agent orchestration pipeline with LangGraph
 - Reduced document QA turnaround by 60% via semantic search with Qdrant
 - Deployed CI/CD pipelines for ML model serving on AWS
 
-Senior 3D Animation Artist - AEC Firm (2014-2022)
+Senior 3D Animation Artist
+AEC Firm
+2014 to 2022
 - Led archviz rendering projects for 20+ commercial developments
 - Implemented motion capture workflows for client presentations
 
+PROJECTS
+Construction Sidekick
+Personal project, agentic RAG system for BOQ analysis
+- Built agentic RAG system using LangGraph ReAct for bill of quantities analysis
+- Implemented hybrid retrieval with RRF and Redis semantic caching
+
 EDUCATION
-Postgraduate Diploma in AI/ML - Asian Institute of Management (2023)
-IBM Data Science Certificate (2022)
-B.S. Agriculture - University of the Philippines (2013)
+Postgraduate Diploma in AI/ML
+Asian Institute of Management
+2023
+
+B.S. Agriculture
+University of the Philippines
+2013
 
 SKILLS
-Python, FastAPI, LangGraph, LangChain, Qdrant, Ollama, Celery, Docker, AWS, MLOps`;
+Python, FastAPI, LangGraph, LangChain, Qdrant, Ollama, Celery, Docker, AWS, MLOps
+
+CERTIFICATIONS
+IBM Data Science Certificate`;
 
 const SAMPLE_JD = `Senior Lead AI/ML Developer - CGI (Taguig, PH)
 
@@ -245,62 +289,29 @@ We are looking for a Senior Lead AI/ML Developer to join our global consulting t
 
 Requirements: 5+ years in AI/ML, Python proficiency, experience with LLMs and vector databases.`;
 
+const AI_TELLS = [
+  "delve", "leverage", "tapestry", "landscape", "robust", "seamless",
+  "synergy", "cutting-edge", "unlock", "elevate", "harness", "dynamic",
+  "passionate about", "proven track record", "results-driven",
+  "game-changer", "holistic", "utilize", "fast-paced world",
+];
+
+const REQUIRED_SECTIONS = ["SUMMARY", "EXPERIENCE", "EDUCATION", "SKILLS"];
+
 let outputText = "";
 let streaming = false;
+let photoFile = null;
 
 function loadSample() {
   document.getElementById("resume").value = SAMPLE_RESUME;
   document.getElementById("jd").value = SAMPLE_JD;
 }
 
-if (window["pdfjsLib"]) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-}
-
-async function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const statusEl = document.getElementById("fileStatus");
-  statusEl.textContent = "Reading " + file.name + "...";
-
-  try {
-    const ext = file.name.split(".").pop().toLowerCase();
-    let text = "";
-
-    if (ext === "txt") {
-      text = await file.text();
-    } else if (ext === "pdf") {
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      const pages = [];
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const strings = content.items.map((item) => item.str);
-        pages.push(strings.join(" "));
-      }
-      text = pages.join("\n\n");
-    } else if (ext === "docx") {
-      const buf = await file.arrayBuffer();
-      const result = await mammoth.extractRawText({ arrayBuffer: buf });
-      text = result.value;
-    } else {
-      throw new Error("Unsupported file type. Use .txt, .pdf, or .docx");
-    }
-
-    document.getElementById("resume").value = text.trim();
-    statusEl.textContent = `Loaded ${file.name} (${text.trim().length} chars)`;
-  } catch (e) {
-    console.error("File parse error:", e);
-    statusEl.textContent = "Error reading file: " + e.message;
-  }
-}
-
 function clearAll() {
   if (streaming) return;
   document.getElementById("resume").value = "";
   document.getElementById("jd").value = "";
+  document.getElementById("fileStatus").textContent = "";
   resetOutput();
 }
 
@@ -310,7 +321,9 @@ function resetOutput() {
     '<span class="placeholder">Your tailored resume will stream here...</span>';
   document.getElementById("statusBadge").style.display = "none";
   document.getElementById("metrics").style.display = "none";
-  document.getElementById("copyBtn").style.display = "none";
+  document.getElementById("atsChecks").innerHTML = "";
+  document.getElementById("downloadRow").style.display = "none";
+  document.getElementById("downloadHint").style.display = "none";
   document.getElementById("progressBar").style.width = "0%";
 }
 
@@ -340,6 +353,72 @@ async function checkHealth() {
   }
 }
 
+// --- File upload (resume) -----------------------------------------------
+
+if (window["pdfjsLib"]) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+
+async function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById("fileStatus");
+  statusEl.textContent = "Reading " + file.name + "...";
+
+  try {
+    const ext = file.name.split(".").pop().toLowerCase();
+    let text = "";
+
+    if (ext === "txt") {
+      text = await file.text();
+    } else if (ext === "pdf") {
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      const pages = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        pages.push(content.items.map((item) => item.str).join(" "));
+      }
+      text = pages.join("\n\n");
+    } else if (ext === "docx") {
+      const buf = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer: buf });
+      text = result.value;
+    } else {
+      throw new Error("Unsupported file type. Use .txt, .pdf, or .docx");
+    }
+
+    document.getElementById("resume").value = text.trim();
+    statusEl.textContent = `Loaded ${file.name} (${text.trim().length} chars)`;
+  } catch (e) {
+    console.error("File parse error:", e);
+    statusEl.textContent = "Error reading file: " + e.message;
+  }
+}
+
+// --- Photo upload ----------------------------------------------------------
+
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  const statusEl = document.getElementById("photoStatus");
+  if (!file) {
+    photoFile = null;
+    statusEl.textContent = "";
+    return;
+  }
+  if (!file.type.startsWith("image/")) {
+    statusEl.textContent = "Please choose an image file.";
+    photoFile = null;
+    return;
+  }
+  photoFile = file;
+  statusEl.textContent = `${file.name} will be added to the downloaded document.`;
+}
+
+// --- Rewrite -----------------------------------------------------------
+
 async function rewrite() {
   if (streaming) return;
   const resume = document.getElementById("resume").value.trim();
@@ -347,7 +426,7 @@ async function rewrite() {
   const model = document.getElementById("model").value;
 
   if (!resume || !jd) {
-    alert("Please paste both your resume and the job description.");
+    alert("Please paste or upload your resume, and paste the job description.");
     return;
   }
 
@@ -356,25 +435,22 @@ async function rewrite() {
   document.getElementById("rewriteBtn").disabled = true;
   document.getElementById("output").innerHTML = "";
   document.getElementById("metrics").style.display = "flex";
-  document.getElementById("copyBtn").style.display = "none";
+  document.getElementById("atsChecks").innerHTML = "";
+  document.getElementById("downloadRow").style.display = "none";
+  document.getElementById("downloadHint").style.display = "none";
   document.getElementById("mFirst").textContent = "—";
   document.getElementById("mTotal").textContent = "—";
-  document.getElementById("mModel").textContent = model;
   setBadge("Streaming…", "badge-info");
 
   const progressBar = document.getElementById("progressBar");
   progressBar.style.width = "5%";
 
   try {
-    console.log("Sending request to", `${API_BASE}/rewrite`, { resume_len: resume.length, jd_len: jd.length, model });
-
     const response = await fetch(`${API_BASE}/rewrite`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ resume, job_description: jd, model }),
     });
-
-    console.log("Response status:", response.status, response.headers.get("content-type"));
 
     if (!response.ok || !response.body) {
       throw new Error(`Server error: ${response.status}`);
@@ -383,15 +459,10 @@ async function rewrite() {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
-    let chunkCount = 0;
 
     while (true) {
       const { done, value } = await reader.read();
-      if (done) {
-        console.log("Stream done. Total chunks received:", chunkCount);
-        break;
-      }
-      chunkCount++;
+      if (done) break;
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split("\n\n");
       buffer = lines.pop();
@@ -400,11 +471,11 @@ async function rewrite() {
         if (!line.startsWith("data:")) continue;
         const jsonStr = line.slice(5).trim();
         if (!jsonStr) continue;
+
         let ev;
         try {
           ev = JSON.parse(jsonStr);
-        } catch (parseErr) {
-          console.error("JSON parse failed for line:", jsonStr, parseErr);
+        } catch {
           continue;
         }
 
@@ -426,12 +497,12 @@ async function rewrite() {
         if (ev.token) {
           outputText += ev.token;
           renderOutput(true);
-          const len = outputText.length;
-          progressBar.style.width = Math.min(90, 20 + len / 30) + "%";
+          progressBar.style.width = Math.min(90, 20 + outputText.length / 30) + "%";
         }
 
         if (ev.done) {
-          document.getElementById("mTotal").textContent = (ev.total_ms / 1000).toFixed(2) + "s";
+          document.getElementById("mTotal").textContent =
+            (ev.total_ms / 1000).toFixed(2) + "s";
           progressBar.style.width = "100%";
           setTimeout(() => (progressBar.style.width = "0%"), 1000);
         }
@@ -439,12 +510,21 @@ async function rewrite() {
     }
 
     renderOutput(false);
+
+    if (outputText.trim().startsWith("UNABLE_TO_PROCESS")) {
+      setBadge("Could not process", "badge-warn");
+      return;
+    }
+
     if (document.getElementById("statusBadge").textContent !== "Streaming (slow start)") {
       setBadge("Done", "badge-success");
     } else {
       setBadge("Done (slow start)", "badge-warn");
     }
-    document.getElementById("copyBtn").style.display = "inline-flex";
+
+    document.getElementById("downloadRow").style.display = "flex";
+    document.getElementById("downloadHint").style.display = "block";
+    runAtsChecks(outputText);
   } catch (e) {
     console.error("Rewrite failed:", e);
     if (!outputText) {
@@ -472,9 +552,94 @@ function copyOutput() {
   if (!outputText) return;
   navigator.clipboard.writeText(outputText).then(() => {
     const btn = document.getElementById("copyBtn");
+    const original = btn.textContent;
     btn.textContent = "Copied";
-    setTimeout(() => (btn.textContent = "Copy"), 1500);
+    setTimeout(() => (btn.textContent = original), 1500);
   });
+}
+
+// --- Download as Word -------------------------------------------------------
+
+async function downloadDocx() {
+  if (!outputText) return;
+  const btn = document.getElementById("downloadBtn");
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Preparing document...";
+
+  try {
+    const formData = new FormData();
+    formData.append("resume_text", outputText);
+    if (photoFile) {
+      formData.append("photo", photoFile);
+    }
+
+    const res = await fetch(`${API_BASE}/export-docx`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server error: ${res.status}`);
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tailored_resume.docx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error("Download failed:", e);
+    alert("Could not generate the Word document: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+// --- Lightweight client-side ATS / quality checks --------------------------
+
+function runAtsChecks(text) {
+  const container = document.getElementById("atsChecks");
+  container.innerHTML = "";
+  const upper = text.toUpperCase();
+  const lower = text.toLowerCase();
+
+  const checks = [];
+
+  for (const section of REQUIRED_SECTIONS) {
+    checks.push({
+      label: `${section} section`,
+      pass: upper.includes(section),
+    });
+  }
+
+  checks.push({ label: "No em-dashes", pass: !text.includes("—") });
+
+  const foundTells = AI_TELLS.filter((w) => lower.includes(w));
+  checks.push({
+    label:
+      foundTells.length === 0
+        ? "No common AI phrases"
+        : `AI phrases found: ${foundTells.slice(0, 3).join(", ")}`,
+    pass: foundTells.length === 0,
+  });
+
+  checks.push({
+    label: "No markdown formatting",
+    pass: !/[*#_`]{1,3}/.test(text),
+  });
+
+  for (const check of checks) {
+    const span = document.createElement("span");
+    span.className = "ats-check " + (check.pass ? "ats-pass" : "ats-fail");
+    span.textContent = (check.pass ? "✓ " : "✗ ") + check.label;
+    container.appendChild(span);
+  }
 }
 
 checkHealth();
