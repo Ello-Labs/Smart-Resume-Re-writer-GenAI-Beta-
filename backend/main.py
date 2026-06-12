@@ -47,7 +47,7 @@ Rules:
 - Output ONLY the rewritten resume text, no commentary, no preamble, no markdown fences
 """
 
-app = FastAPI(title="Open-Source Resume Rewriter")
+app = FastAPI(title="Smart Resume Re-writer (GenAI Beta)")
 
 app.add_middleware(
     CORSMiddleware,
