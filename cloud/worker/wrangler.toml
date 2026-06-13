@@ -1,0 +1,6 @@
+name = "kimmiii-resume-rewriter-api"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# GROQ_API_KEY is set as a secret, not here:
+#   npx wrangler secret put GROQ_API_KEY
